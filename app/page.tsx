@@ -18,21 +18,20 @@ export default function Home() {
   const [verificationId, setVerificationId] = useState<number | null>(null);
   const [showNFTModal, setShowNFTModal] = useState(false);
   const [basename, setBasename] = useState<string>('');
+  const { isLoading: isConfirming, isSuccess: isConfirmed, data: receiptData } = 
+    useWaitForTransactionReceipt({ hash });
 
-  const { isLoading: isConfirming, isSuccess: isConfirmed } = 
-    useWaitForTransactionReceipt({ 
-      hash,
-      onSuccess: (data) => {
-        if (data.logs && data.logs.length > 0) {
-          const log = data.logs[0];
-          if (log.topics && log.topics.length > 1) {
-            const id = parseInt(log.topics[1], 16);
-            setVerificationId(id);
-          }
-        }
+  // Extract verification ID from receipt
+  useEffect(() => {
+    if (receiptData?.logs && receiptData.logs.length > 0) {
+      const log = receiptData.logs[0];
+      if (log.topics && log.topics.length > 1) {
+        const id = parseInt(log.topics[1], 16);
+        setVerificationId(id);
       }
-    });
-
+    }
+  }, [receiptData]);
+ 
   const categories = [
     'Token Launch',
     'NFT Project', 
