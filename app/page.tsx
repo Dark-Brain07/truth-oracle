@@ -22,11 +22,11 @@ export default function Home() {
     useWaitForTransactionReceipt({ hash });
 
   // Extract verification ID from receipt
-  useEffect(() => {
+   useEffect(() => {
     if (receiptData?.logs && receiptData.logs.length > 0) {
       const log = receiptData.logs[0];
-      if (log.topics && log.topics.length > 1) {
-        const id = parseInt(log.topics[1], 16);
+      if (log.topics && log.topics.length > 1 && log.topics[1]) {
+        const id = parseInt(log.topics[1] as string, 16);
         setVerificationId(id);
       }
     }
